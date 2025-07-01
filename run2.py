@@ -22,8 +22,9 @@ def main():
     print(f"✅ GPU: {torch.cuda.get_device_name(0)}")
     print(f"✅ VRAM: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
     
-    model_name = "Qwen/Qwen2.5-VL-32B-Instruct"
-    
+    #model_name = "Qwen/Qwen2.5-VL-32B-Instruct"
+    model_name = "Qwen/Qwen2.5-VL-7B-Instruct"
+
     print(f"\n📥 Loading model: {model_name}")
     print("This will take a few minutes...")
     

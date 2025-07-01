@@ -30,13 +30,23 @@ def main():
     
     try:
         # Use AutoModel instead of specific class to avoid compatibility issues
+        """
         model = AutoModel.from_pretrained(
             model_name,
             torch_dtype=torch.bfloat16,
             device_map="cuda:0",
             trust_remote_code=True
         )
+        """
         
+
+        model = Qwen2VLForConditionalGeneration.from_pretrained(
+            model_name,
+            torch_dtype=torch.bfloat16,
+            device_map="cuda:0",
+            trust_remote_code=True
+        )
+
         # Load processor
         processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
         

@@ -7,7 +7,7 @@ print("Testing with pipeline...")
 # Create a vision-language pipeline
 pipe = pipeline(
     "image-to-text",
-    model="Qwen/Qwen2.5-VL-32B-Instruct",
+    model="Qwen/Qwen2.5-VL-7B-Instruct",
     torch_dtype=torch.bfloat16,
     device_map="cuda:0",
     trust_remote_code=True

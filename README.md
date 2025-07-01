@@ -6,6 +6,7 @@ Run a vision language model
 sudo su ubuntu
 cd
 sudo apt update
+sudo apt install python3-dev
 nvidia-smi
 sudo apt install nvidia-utils-550-server
 lsmod | grep nvidia

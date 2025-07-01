@@ -54,8 +54,9 @@ def main():
         
         try:
             response = requests.get(image_url, timeout=10)
-            image = Image.open(BytesIO(response.content))
-            print(f"✅ Image loaded: {image.size}")
+            image_path = "test_image.jpg"
+            image = Image.open(image_path)
+            print(f"✅ Local image loaded: {image.size}")
             
             # Prepare the conversation
             messages = [

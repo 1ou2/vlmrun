@@ -4,7 +4,7 @@ Simple test for Qwen2.5-VL-32B-Instruct model
 """
 
 import torch
-from transformers import Qwen2VLForConditionalGeneration, AutoTokenizer, AutoProcessor
+from transformers import Qwen2VLForConditionalGeneration, AutoTokenizer, AutoProcessor, AutoModel
 from qwen_vl_utils import process_vision_info
 from PIL import Image
 import requests
@@ -28,8 +28,8 @@ def main():
     print("This will take a few minutes...")
     
     try:
-        # Load the correct model class for Qwen2.5-VL
-        model = Qwen2VLForConditionalGeneration.from_pretrained(
+        # Use AutoModel instead of specific class to avoid compatibility issues
+        model = AutoModel.from_pretrained(
             model_name,
             torch_dtype=torch.bfloat16,
             device_map="cuda:0",

@@ -5,4 +5,4 @@ torchaudio
 pillow 
 requests
 qwen-vl-utils
-flash-attn 
+accelerate

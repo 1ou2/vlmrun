@@ -1,5 +1,20 @@
+# EC2 drivers
+sudo su ubuntu
+cd
+sudo apt update
+nvidia-smi
+sudo apt install nvidia-utils-550-server
+lsmod | grep nvidia
+sudo apt install nvidia-driver-550
+sudo reboot
+
 # vlmrun
 Run a vision language model
+
+#
+sudo apt install python3.12-venv 
+python3 -m venv .venv
+source .venv/bin activate
 
 # package
 # Install the required packages for Qwen2.5-VL

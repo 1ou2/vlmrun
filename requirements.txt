@@ -6,3 +6,4 @@ pillow
 requests
 qwen-vl-utils
 accelerate
+bitsandbytes

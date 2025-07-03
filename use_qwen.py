@@ -1,13 +1,18 @@
 from transformers import Qwen2_5_VLForConditionalGeneration, AutoTokenizer, AutoProcessor
 from qwen_vl_utils import process_vision_info
+import torch
 import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
 
-# To restrict to two GPU
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
+
+
 
 # default: Load the model on the available device(s)
 model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
-    "Qwen/Qwen2.5-VL-32B-Instruct", torch_dtype="auto", device_map="auto"
+    "Qwen/Qwen2.5-VL-32B-Instruct", 
+    torch_dtype=torch.bfloat16,
+    attn_implementation="sdpa", 
+    device_map="auto"
 )
 
 # We recommend enabling flash_attention_2 for better acceleration and memory saving, especially in multi-image and video scenarios.
@@ -19,7 +24,11 @@ model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
 # )
 
 # default processer
-processor = AutoProcessor.from_pretrained("Qwen/Qwen2.5-VL-32B-Instruct")
+processor = AutoProcessor.from_pretrained("Qwen/Qwen2.5-VL-32B-Instruct",use_fast=True)
+
+processor.save_pretrained("./my_qwen_processor")
+processor = AutoProcessor.from_pretrained("./my_qwen_processor")
+
 
 # The default range for the number of visual tokens per image in the model is 4-16384.
 # You can set min_pixels and max_pixels according to your needs, such as a token range of 256-1280, to balance performance and cost.
@@ -33,9 +42,9 @@ messages = [
         "content": [
             {
                 "type": "image",
-                "image": "https://qianwen-res.oss-cn-beijing.aliyuncs.com/Qwen-VL/assets/demo.jpeg",
+                "image": "file:///home/ubuntu/vlmrun/tmp/dossier_01.png",
             },
-            {"type": "text", "text": "Describe this image."},
+            {"type": "text", "text": "Décris en détail cette image."},
         ],
     }
 ]
@@ -55,7 +64,7 @@ inputs = processor(
 inputs = inputs.to("cuda")
 
 # Inference: Generation of the output
-generated_ids = model.generate(**inputs, max_new_tokens=128)
+generated_ids = model.generate(**inputs,max_new_tokens=1024)
 generated_ids_trimmed = [
     out_ids[len(in_ids) :] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
 ]

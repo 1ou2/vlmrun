@@ -11,6 +11,8 @@ nvidia-smi
 sudo apt install nvidia-utils-550-server
 lsmod | grep nvidia
 sudo apt install nvidia-driver-550
+sudo apt install nvidia-cuda-toolkit
+sudo apt install imagemagick
 sudo reboot
 ```
 

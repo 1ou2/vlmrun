@@ -2,30 +2,23 @@ from transformers import Qwen2_5_VLForConditionalGeneration, AutoTokenizer, Auto
 from qwen_vl_utils import process_vision_info
 import torch
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
 
-
-
+#os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
+QWEN="Qwen/Qwen2.5-VL-32B-Instruct"
+MAX_NEW_TOKENS=128
+FILE = "file:///home/ubuntu/vlmrun/tmp/page_01.jpg"
 
 # default: Load the model on the available device(s)
 model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
-    "Qwen/Qwen2.5-VL-32B-Instruct", 
+    QWEN, 
     torch_dtype=torch.bfloat16,
-    attn_implementation="sdpa", 
+    attn_implementation="sdpa", #"flash_attention_2"
     device_map="auto"
 )
 
-# We recommend enabling flash_attention_2 for better acceleration and memory saving, especially in multi-image and video scenarios.
-# model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
-#     "Qwen/Qwen2.5-VL-7B-Instruct",
-#     torch_dtype=torch.bfloat16,
-#     attn_implementation="flash_attention_2",
-#     device_map="auto",
-# )
 
 # default processer
-processor = AutoProcessor.from_pretrained("Qwen/Qwen2.5-VL-32B-Instruct",use_fast=True)
-
+processor = AutoProcessor.from_pretrained(QWEN,use_fast=True)
 processor.save_pretrained("./my_qwen_processor")
 processor = AutoProcessor.from_pretrained("./my_qwen_processor")
 
@@ -42,7 +35,7 @@ messages = [
         "content": [
             {
                 "type": "image",
-                "image": "file:///home/ubuntu/vlmrun/tmp/dossier_01.png",
+                "image": FILE,
             },
             {"type": "text", "text": "Décris en détail cette image."},
         ],
@@ -64,7 +57,7 @@ inputs = processor(
 inputs = inputs.to("cuda")
 
 # Inference: Generation of the output
-generated_ids = model.generate(**inputs,max_new_tokens=1024)
+generated_ids = model.generate(**inputs,max_new_tokens=MAX_NEW_TOKENS)
 generated_ids_trimmed = [
     out_ids[len(in_ids) :] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
 ]
